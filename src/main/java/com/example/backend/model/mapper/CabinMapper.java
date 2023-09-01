@@ -24,6 +24,7 @@ public class CabinMapper {
 				.id(cabinDTO.getId())
 				.name(cabinDTO.getName())
 				.maxCapacity(cabinDTO.getMaxCapacity())
+				.regularPrice(cabinDTO.getRegularPrice())
 				.discount(cabinDTO.getDiscount())
 				.imageUrl(cabinDTO.getImageUrl())
 				.description(cabinDTO.getDescription())
