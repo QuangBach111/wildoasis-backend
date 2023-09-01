@@ -8,7 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 @CrossOrigin
 @RestController
-@RequestMapping("/api/settings")
+@RequestMapping("/settings")
 @AllArgsConstructor
 public class SettingController {
 	final SettingService settingService;

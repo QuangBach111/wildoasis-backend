@@ -7,7 +7,8 @@ import com.example.backend.repo.CabinRepo;
 import com.example.backend.service.CabinService;
 import com.example.backend.utils.Helper;
 import jakarta.persistence.EntityNotFoundException;
-import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,11 +17,17 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-@AllArgsConstructor
 public class CabinServiceImpl implements CabinService {
-	final private CabinRepo cabinRepo;
-	final private CabinMapper cabinMapper;
-	private final String FOLDER_PATH = "/Users/buiqu/OneDrive/Máy tính/workspace/reactjs/the wild oasis/backend/src/main/resources/static/cabins";
+	@Autowired
+	private CabinRepo cabinRepo;
+	@Autowired
+	private CabinMapper cabinMapper;
+
+	@Value("${images.cabins.path}")
+	private String imageCabinPath;
+
+	@Value("${images.cabins.url}")
+	private String imageCabinUrl;
 
 	@Transactional(readOnly=true)
 	@Override
@@ -32,23 +39,26 @@ public class CabinServiceImpl implements CabinService {
 
 	@Override
 	public Long deleteCabinById(Long id) {
-		boolean hasCabin = cabinRepo.existsById(id);
+		Cabin cabin = cabinRepo.findById(id)
+				.orElseThrow(() -> new EntityNotFoundException(String.format("Cabin with id: %d is not found!", id)));
 
-		if (hasCabin) {
-			cabinRepo.deleteById(id);
-			return id;
-		}
+		// delete cabin image in file system
+		Helper.removeImageFromFileSystem(cabin.getImageUrl(), imageCabinPath);
 
-		throw new EntityNotFoundException("Cabin is not found");
+		// remove cabin in db
+		cabinRepo.deleteById(id);
+
+
+		return id;
 	}
 
 	@Override
 	public Long createCabin(CabinDTO cabinDTO) throws IOException {
 		// Upload file to file system
-		String imageUrl = Helper.uploadImageToFileSystem(cabinDTO.getImage(), FOLDER_PATH, cabinDTO.getName());
+		String imageName = Helper.uploadImageToFileSystem(cabinDTO.getImage(), imageCabinPath);
 
 		// Set path file to cabin
-		cabinDTO.setImageUrl(imageUrl);
+		cabinDTO.setImageUrl(imageCabinUrl + imageName);
 
 		// Map CartDTO to Cart, and save to database
 		Cabin createdCabin = cabinRepo.save(cabinMapper.mapToCabin(cabinDTO));
@@ -60,8 +70,8 @@ public class CabinServiceImpl implements CabinService {
 	@Override
 	public void updateCabin(CabinDTO cabinDTO) throws IOException {
 		// If Image is new
-		if(cabinDTO.getImage() != null) {
-			String imageUrl = Helper.uploadImageToFileSystem(cabinDTO.getImage(), FOLDER_PATH, cabinDTO.getName());
+		if (cabinDTO.getImage() != null) {
+			String imageUrl = Helper.uploadImageToFileSystem(cabinDTO.getImage(), imageCabinPath);
 		}
 		cabinRepo.save(cabinMapper.mapToCabin(cabinDTO));
 	}
