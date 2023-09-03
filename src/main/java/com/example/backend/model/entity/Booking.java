@@ -58,7 +58,7 @@ public class Booking {
 	@Column(name="created_at")
 	private LocalDate createdAt;
 
-	@ManyToOne
+	@ManyToOne(cascade = {CascadeType.PERSIST})
 	@JoinColumn(name="cabin_id")
 	private Cabin cabin;
 

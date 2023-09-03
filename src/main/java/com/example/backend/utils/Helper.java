@@ -3,18 +3,21 @@ package com.example.backend.utils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
+import java.util.Objects;
 
 public class Helper {
-	public static String uploadImageToFileSystem(MultipartFile image, String folder) throws IOException {
-		String fullPath = folder + "/" + image.getOriginalFilename();
+	public static String uploadImageToFileSystem(MultipartFile image, String folder, String imageName) throws IOException {
+		String subFix = Objects.requireNonNull(image.getOriginalFilename()).split("\\.")[1];
+		String fullPath = folder + imageName + "." +subFix;
 
 		createCabinsDirIfNeeded(folder);
+
 		File file = new File(fullPath);
 		BufferedOutputStream stream = new BufferedOutputStream(new FileOutputStream((file)));
 		stream.write(image.getBytes());
 		stream.close();
 
-		return image.getOriginalFilename();
+		return imageName + "." +subFix;
 	}
 
 	private static void createCabinsDirIfNeeded(String folder) {
@@ -27,7 +30,6 @@ public class Helper {
 
 	public static void removeImageFromFileSystem(String imageUrl, String folderPath) {
 		String imagePath = convertImageUrlToImagePath(imageUrl, folderPath);
-		assert imagePath != null;
 
 		File file = new File(imagePath);
 
