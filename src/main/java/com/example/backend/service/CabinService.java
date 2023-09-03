@@ -1,12 +1,13 @@
 package com.example.backend.service;
 
 import com.example.backend.model.dto.CabinDTO;
+import org.springframework.data.domain.Page;
 
 import java.io.IOException;
 import java.util.List;
 
 public interface CabinService {
-	List<CabinDTO> getAllCabin();
+	Page<CabinDTO> getAllCabinPagination(int pageNo, int pageSize);
 	Long deleteCabinById(Long id);
 
 	Long createCabin(CabinDTO cabinDTO) throws IOException;

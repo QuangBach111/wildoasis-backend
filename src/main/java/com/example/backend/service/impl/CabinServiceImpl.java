@@ -9,6 +9,9 @@ import com.example.backend.utils.Helper;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,12 +32,12 @@ public class CabinServiceImpl implements CabinService {
 	@Value("${images.cabins.url}")
 	private String imageCabinUrl;
 
-	@Transactional(readOnly=true)
+//	@Transactional(readOnly=true)
 	@Override
-	public List<CabinDTO> getAllCabin() {
-		return cabinRepo.getAll()
-				.map(cabinMapper::mapToCabinDTO)
-				.collect(Collectors.toList());
+	public Page<CabinDTO> getAllCabinPagination(int pageNo, int pageSize) {
+		Pageable pageable = PageRequest.of(pageNo - 1, pageSize);
+		Page<Cabin> cabinPage = cabinRepo.findAll(pageable);
+		return cabinPage.map((cabin -> cabinMapper.mapToCabinDTO(cabin)));
 	}
 
 	@Override
@@ -55,7 +58,7 @@ public class CabinServiceImpl implements CabinService {
 	@Override
 	public Long createCabin(CabinDTO cabinDTO) throws IOException {
 		// Upload file to file system
-		String imageName = Helper.uploadImageToFileSystem(cabinDTO.getImage(), imageCabinPath);
+		String imageName = Helper.uploadImageToFileSystem(cabinDTO.getImage(), imageCabinPath, cabinDTO.getName());
 
 		// Set path file to cabin
 		cabinDTO.setImageUrl(imageCabinUrl + imageName);
@@ -71,7 +74,7 @@ public class CabinServiceImpl implements CabinService {
 	public void updateCabin(CabinDTO cabinDTO) throws IOException {
 		// If Image is new
 		if (cabinDTO.getImage() != null) {
-			String imageUrl = Helper.uploadImageToFileSystem(cabinDTO.getImage(), imageCabinPath);
+			String imageUrl = Helper.uploadImageToFileSystem(cabinDTO.getImage(), imageCabinPath, cabinDTO.getName());
 		}
 		cabinRepo.save(cabinMapper.mapToCabin(cabinDTO));
 	}
