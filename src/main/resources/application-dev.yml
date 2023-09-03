@@ -7,12 +7,22 @@ spring:
     show-sql: true
     hibernate:
       ddl-auto: update
+#    properties:
+#      hibernate:
+#        format_sql: true
   servlet:
     multipart:
       max-file-size: 15MB
       max-request-size: 15MB
-  mvc:
-    static-path-pattern: /static/**
-  web:
-    resources:
-      static-locations: classpath:/static/
+
+server:
+  servlet:
+    context-path: /api
+
+images:
+  cabins:
+    url: "http://localhost:8080/api/images/cabins/"
+    path: "src/main/resources/static/images/cabins/"
+  avatar:
+    url: "http://localhost:8080/api/images/avatars/"
+    path: "src/main/resources/static/images/avatars/"

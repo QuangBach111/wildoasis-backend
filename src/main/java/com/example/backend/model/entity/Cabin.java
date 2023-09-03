@@ -42,7 +42,7 @@ public class Cabin {
 	@Column(name = "created_at")
 	private LocalDate createdAt;
 
-	@OneToMany(mappedBy = "cabin")
+	@OneToMany(mappedBy = "cabin", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<Booking> bookings;
 
 }
