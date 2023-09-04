@@ -1,6 +1,7 @@
 package com.example.backend.model.dto;
 
 import com.example.backend.utils.BookingStatus;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,6 +10,7 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+
 @Builder
 @AllArgsConstructor
 @Data
@@ -28,11 +30,11 @@ public class BookingDTO {
 
 	private Double totalPrice;
 
+	@JsonProperty("status")
 	private BookingStatus bookingStatus;
 
 	private Boolean hasBreakfast;
 
-	@Column(name="is_paid")
 	private Boolean isPaid;
 
 	private String observations;

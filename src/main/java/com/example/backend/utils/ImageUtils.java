@@ -5,7 +5,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.*;
 import java.util.Objects;
 
-public class Helper {
+public class ImageUtils {
 	public static String uploadImageToFileSystem(MultipartFile image, String folder, String imageName) throws IOException {
 		String subFix = Objects.requireNonNull(image.getOriginalFilename()).split("\\.")[1];
 		String fullPath = folder + imageName + "." +subFix;
