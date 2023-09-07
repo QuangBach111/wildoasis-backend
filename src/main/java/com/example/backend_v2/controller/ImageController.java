@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-//@CrossOrigin
 @RestController
 @RequestMapping("/images")
 public class ImageController {
