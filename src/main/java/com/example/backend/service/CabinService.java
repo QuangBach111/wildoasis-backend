@@ -7,7 +7,7 @@ import java.io.IOException;
 import java.util.List;
 
 public interface CabinService {
-	Page<CabinDTO> getAllCabinPagination(int pageNo, int pageSize);
+	Page<CabinDTO> getAllCabinPagination(int pageNo, int pageSize, String filter, String sortBy);
 	Long deleteCabinById(Long id);
 
 	Long createCabin(CabinDTO cabinDTO) throws IOException;

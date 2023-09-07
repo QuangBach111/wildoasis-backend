@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -29,12 +30,36 @@ public class CabinServiceImpl implements CabinService {
 	@Value("${images.cabins.url}")
 	private String imageCabinUrl;
 
-//	@Transactional(readOnly=true)
+	//	@Transactional(readOnly=true)
 	@Override
-	public Page<CabinDTO> getAllCabinPagination(int pageNo, int pageSize) {
-		Pageable pageable = PageRequest.of(pageNo - 1, pageSize);
-		Page<Cabin> cabinPage = cabinRepo.findAll(pageable);
-		return cabinPage.map((cabin -> cabinMapper.mapToCabinDTO(cabin)));
+	public Page<CabinDTO> getAllCabinPagination(int pageNo, int pageSize, String filter, String sortBy) {
+
+		PageRequest pageRequest = PageRequest.of(pageNo - 1, pageSize);
+
+		//SORT BY (field-direction)
+
+		if (!sortBy.isEmpty()) {
+			String[] sortByArr = sortBy.split("-");
+			pageRequest = pageRequest.withSort(Sort.Direction.valueOf(sortByArr[1].toUpperCase()), sortByArr[0]);
+		}
+
+
+		// FILTER
+		//with discount
+		if (!filter.isEmpty()) {
+			if (filter.contains("with")) {
+				return cabinRepo.findAllWithDiscount(pageRequest)
+						.map(cabin -> cabinMapper.mapToCabinDTO(cabin));
+			}
+			//with no discount
+			if (filter.contains("no")) {
+				return cabinRepo.findAllWithNoDiscount(pageRequest)
+						.map(cabin -> cabinMapper.mapToCabinDTO(cabin));
+			}
+		}
+		return cabinRepo.findAll(pageRequest)
+				.map(cabin -> cabinMapper.mapToCabinDTO(cabin));
+
 	}
 
 	@Override

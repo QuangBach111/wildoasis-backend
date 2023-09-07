@@ -3,7 +3,9 @@ package com.example.backend.controller;
 import com.example.backend.model.dto.BookingDTO;
 import com.example.backend.service.BookingService;
 import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,10 +26,10 @@ public class BookingController {
 			@RequestParam(name = "sortBy_field", required = false) String sortByField,
 			@RequestParam(name = "sortBy_direction", required = false) String sortByDirection
 	) {
-		int pageSizeDefault = 10;
+		final int PAGE_SIZE = 5;
 
 		pageNo = pageNo == null || pageNo == 0 ? 1 : pageNo;
-		pageSize = pageSize == null || pageSize == 0 ? pageSizeDefault : pageSize;
+		pageSize = pageSize == null || pageSize == 0 ? PAGE_SIZE : pageSize;
 
 		return ResponseEntity.ok(bookingService.getAllBookingsPagination(pageNo, pageSize, filterField,filterValue,sortByField, sortByDirection));
 	}
@@ -36,4 +38,20 @@ public class BookingController {
 	public ResponseEntity<BookingDTO> getBookingById(@PathVariable("id") Long id) {
 			return ResponseEntity.ok(bookingService.getBookingById(id));
 	}
+
+	@PutMapping
+	public ResponseEntity<BookingDTO> updateBooking(@RequestBody BookingDTO bookingDTO) {
+		try {
+			return ResponseEntity.ok(bookingService.updateBooking(bookingDTO));
+		} catch (IllegalAccessException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	@DeleteMapping("/{bookingId}")
+	public ResponseEntity<?> deleteBooking(@PathVariable("bookingId") Long bookingId) {
+		bookingService.deleteBooking(bookingId);
+		return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+	}
+
 }

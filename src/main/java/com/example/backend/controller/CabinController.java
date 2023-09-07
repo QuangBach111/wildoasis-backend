@@ -22,12 +22,13 @@ public class CabinController {
 	@GetMapping
 	public ResponseEntity<Page<CabinDTO>> getAllCabin(
 			@RequestParam(name="pageNo", required=false) Integer pageNo,
-			@RequestParam(name="pageSize", required=false) Integer pageSize
+			@RequestParam(name="filter", required=false) String filter,
+			@RequestParam(name="sortBy", required=false) String sortBy
 	) {
+		final int PAGE_SIZE = 5;
 		pageNo = pageNo == null || pageNo == 0 ? 1 : pageNo;
-		final int PAGE_SIZE = 10;
-		pageSize = pageSize == null ? PAGE_SIZE : pageSize;
-		Page<CabinDTO> cabinDTOPage = cabinService.getAllCabinPagination(pageNo, pageSize);
+
+		Page<CabinDTO> cabinDTOPage = cabinService.getAllCabinPagination(pageNo, PAGE_SIZE, filter, sortBy);
 
 		return ResponseEntity.ok(cabinDTOPage);
 	}

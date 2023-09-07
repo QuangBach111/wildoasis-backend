@@ -13,6 +13,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Map;
 
@@ -28,12 +29,12 @@ public class BookingServiceImpl implements BookingService {
 		PageRequest pageRequest = PageRequest.of(pageNo - 1, pageSize, Sort.by(Sort.Direction.DESC, "startDate"));
 
 		// SORT BY
-		if(sortByField != null && sortByDirection != null) {
+		if (sortByField != null && sortByDirection != null) {
 			pageRequest = pageRequest.withSort(Sort.Direction.valueOf(sortByDirection.toUpperCase()), sortByField);
 		}
 
-		// FILTER
-		if(filterField != null && filterValue != null){
+		// FILTER BY BOOKING STATUS
+		if (filterField != null && filterValue != null) {
 			return bookingRepo.getAllByBookingStatus(BookingStatus.valueOf(filterValue.toUpperCase()), pageRequest)
 					.map(booking -> bookingMapper.mapToBookingDTO(booking));
 		}
@@ -48,5 +49,40 @@ public class BookingServiceImpl implements BookingService {
 				.orElseThrow(() -> new EntityNotFoundException(String.format("Booking with id: %d is not found!", id)));
 
 		return bookingMapper.mapToBookingDTO(booking);
+	}
+
+	@Override
+	@Transactional
+	public BookingDTO updateBooking(BookingDTO bookingDTO) throws IllegalAccessException {
+		Booking booking = bookingRepo.findById(bookingDTO.getId())
+				.orElseThrow(() -> new EntityNotFoundException(String.format("Booking with id: %d not found!", bookingDTO.getId())));
+
+		bookingMapper.setNonNullFieldsFromBookingDTO(booking, bookingDTO);
+
+
+
+
+		return bookingMapper.mapToBookingDTO((booking));
+	}
+
+	@Override
+	@Transactional
+	public BookingDTO updateBookingWithBookingStatusAndIsPaid(BookingDTO bookingDTO) {
+		Booking booking = bookingRepo.findById(bookingDTO.getId())
+				.orElseThrow(() -> new EntityNotFoundException(String.format("Booking with id: %d not found!", bookingDTO.getId())));
+
+		if (bookingDTO.getIsPaid() != null) {
+			booking.setIsPaid(bookingDTO.getIsPaid());
+		}
+		if (bookingDTO.getBookingStatus() != null) {
+			booking.setBookingStatus(bookingDTO.getBookingStatus());
+		}
+
+		return bookingMapper.mapToBookingDTO(booking);
+	}
+
+	@Override
+	public void deleteBooking(Long bookingId) {
+		bookingRepo.deleteById(bookingId);
 	}
 }

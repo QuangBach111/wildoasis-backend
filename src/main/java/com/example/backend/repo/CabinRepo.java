@@ -7,7 +7,16 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 public interface CabinRepo extends JpaRepository<Cabin, Long> {
-//	@Query(value="SELECT c FROM Cabin c",
-//			countQuery="SELECT COUNT(c) FROM Cabin c")
-//	Page<Cabin> getAll(Pageable pageable);
+	@Query("""
+				SELECT c FROM Cabin c
+				WHERE c.discount != 0
+			""")
+	Page<Cabin> findAllWithDiscount(Pageable pageable);
+
+	@Query("""
+				SELECT c FROM Cabin c
+				WHERE c.discount = 0
+			""")
+	Page<Cabin> findAllWithNoDiscount(Pageable pageable);
+
 }
