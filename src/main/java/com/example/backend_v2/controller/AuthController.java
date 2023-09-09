@@ -15,7 +15,7 @@ import java.io.IOException;
 public class AuthController {
 	private final AuthService authService;
 	@PostMapping("/login")
-	public ResponseEntity<?> doLogin(@RequestBody LoginDTO loginDTO){
+	public ResponseEntity<String> doLogin(@RequestBody LoginDTO loginDTO){
 		String token = authService.doLogin(loginDTO);
 		return ResponseEntity.ok(token);
 	}

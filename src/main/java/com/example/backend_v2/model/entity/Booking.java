@@ -58,11 +58,11 @@ public class Booking {
 	@Column(name="created_at")
 	private LocalDate createdAt;
 
-	@ManyToOne(cascade = {CascadeType.PERSIST})
+	@ManyToOne(cascade = {CascadeType.PERSIST}, fetch = FetchType.LAZY)
 	@JoinColumn(name="cabin_id")
 	private Cabin cabin;
 
-	@ManyToOne(cascade={CascadeType.PERSIST})
+	@ManyToOne(cascade={CascadeType.PERSIST}, fetch = FetchType.LAZY)
 	@JoinColumn(name="guest_id")
 	private Guest guest;
 }

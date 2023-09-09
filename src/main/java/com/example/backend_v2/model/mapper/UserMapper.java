@@ -24,7 +24,7 @@ public class UserMapper {
 
 	public UserDTO mapToUserDTO(User user) {
 		return UserDTO.builder()
-				.username(user.getUsername())
+				.fullName(user.getFullName())
 				.email(user.getEmail())
 				.avatarUrl(user.getAvatarUrl())
 				.role(user.getRole())
