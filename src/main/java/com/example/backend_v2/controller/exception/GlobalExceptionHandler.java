@@ -10,6 +10,7 @@ import java.io.IOException;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
+	// handler exception
 	@ExceptionHandler({EntityNotFoundException.class})
 	public ResponseEntity<String> handleEntityExistsException(EntityNotFoundException exception) {
 

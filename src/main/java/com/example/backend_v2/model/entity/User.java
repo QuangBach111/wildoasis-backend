@@ -31,8 +31,10 @@ public class User implements UserDetails {
 	@Column(unique = true, length = 200)
 	private String email;
 
+	@Column(name = "full_name", length = 200)
 	private String fullName;
-	@Column(unique = true, length = 500)
+
+	@Column(unique = true, length = 255)
 	private String password;
 
 	@CreationTimestamp

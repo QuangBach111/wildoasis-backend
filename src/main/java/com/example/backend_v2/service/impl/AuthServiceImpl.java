@@ -27,12 +27,6 @@ public class AuthServiceImpl implements AuthService {
 	private final JwtUtil jwtUtil;
 	private final UserMapper userMapper;
 
-	@Value("${images.avatar.path}")
-	private String imageCabinPath;
-
-	@Value("${images.avatar.url}")
-	private String imageCabinUrl;
-
 	@Override
 	public String doLogin(LoginDTO loginDTO) {
 		// Do authenticate
@@ -51,11 +45,11 @@ public class AuthServiceImpl implements AuthService {
 			throw new EntityExistsException("Username or email or idCard is already existed");
 		}
 
-		// Save avatar into fileSystem
-		if(registerDTO.getAvatar() != null) {
-			String imageName = ImageUtils.uploadImageToFileSystem(registerDTO.getAvatar(), imageCabinPath, registerDTO.getFullName());
-			registerDTO.setAvatarUrl(imageCabinUrl + imageName);
-		}
+//		// Save avatar into fileSystem
+//		if(registerDTO.getAvatar() != null) {
+//			String imageName = ImageUtils.uploadImageToFileSystem(registerDTO.getAvatar(), imageCabinPath, registerDTO.getFullName());
+//			registerDTO.setAvatarUrl(imageCabinUrl + imageName);
+//		}
 
 		userRepo.save(userMapper.mapfromRegisterDTOtoUser(registerDTO));
 	}

@@ -6,13 +6,20 @@ import com.example.backend_v2.model.mapper.BookingMapper;
 import com.example.backend_v2.repo.BookingRepo;
 import com.example.backend_v2.service.BookingService;
 import com.example.backend_v2.utils.BookingStatus;
+
 import javax.persistence.EntityNotFoundException;
+
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -48,16 +55,31 @@ public class BookingServiceImpl implements BookingService {
 		return bookingMapper.mapToBookingDTO(booking);
 	}
 
-	@Override
 	@Transactional
+	@Override
+	public List<BookingDTO> getBookingsAfterDate(LocalDate date, LocalDate currentDate) {
+
+		return bookingRepo.getBookingsByCreatedAt(date, currentDate)
+				.map(booking -> bookingMapper.mapToBookingDTO(booking))
+				.collect(Collectors.toList());
+	}
+
+	@Transactional
+	@Override
+	public List<BookingDTO> getStaysAfterDate(LocalDateTime date, LocalDateTime currentDate) {
+
+		return bookingRepo.getBookingsByStartDate(date, currentDate)
+				.map(booking -> bookingMapper.mapToBookingDTO(booking))
+				.collect(Collectors.toList());
+	}
+
+	@Transactional
+	@Override
 	public BookingDTO updateBooking(BookingDTO bookingDTO) throws IllegalAccessException {
 		Booking booking = bookingRepo.findById(bookingDTO.getId())
 				.orElseThrow(() -> new EntityNotFoundException(String.format("Booking with id: %d not found!", bookingDTO.getId())));
 
 		bookingMapper.setNonNullFieldsFromBookingDTO(booking, bookingDTO);
-
-
-
 
 		return bookingMapper.mapToBookingDTO((booking));
 	}
