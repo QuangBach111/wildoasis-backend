@@ -81,7 +81,6 @@ public class BookingServiceImpl implements BookingService {
 
 		bookingMapper.setNonNullFieldsFromBookingDTO(booking, bookingDTO);
 
-
 		return bookingMapper.mapToBookingDTO((booking));
 	}
 

@@ -23,3 +23,4 @@ public interface BookingRepo extends JpaRepository<Booking, Long> {
 	@Query("SELECT b FROM Booking b WHERE b.startDate between ?1 and ?2")
 	Stream<Booking> getBookingsByStartDate(LocalDateTime date, LocalDateTime currentDate);
 }
+// Tai ssaso ko co @Repo van chay

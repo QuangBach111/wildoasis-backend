@@ -12,6 +12,7 @@ import org.springframework.web.multipart.MultipartFile;
 @AllArgsConstructor
 @NoArgsConstructor
 public class UserDTO {
+	private Long id;
 	private String email;
 	private String fullName;
 	private MultipartFile avatar;

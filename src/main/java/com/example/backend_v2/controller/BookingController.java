@@ -5,14 +5,12 @@ import com.example.backend_v2.service.BookingService;
 import com.example.backend_v2.utils.DateUtil;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @RestController
@@ -60,9 +58,11 @@ public class BookingController {
 	) {
 		LocalDateTime parsedDate = DateUtil.parseISODateTime(date.replace("'", ""));
 		LocalDateTime parsedCurrentDate = DateUtil.parseISODateTime(currentDate.replace("'", ""));
-		return ResponseEntity.ok(bookingService.getStaysAfterDate(parsedDate, parsedCurrentDate));
+		List<BookingDTO> bookingDTOS = bookingService.getStaysAfterDate(parsedDate, parsedCurrentDate);
+		return ResponseEntity.ok(bookingDTOS);
 	}
 
+	@CrossOrigin
 	@PutMapping
 	public ResponseEntity<BookingDTO> updateBooking(@RequestBody BookingDTO bookingDTO) {
 		try {
